@@ -1,14 +1,19 @@
 import mysql.connector
 from mysql.connector import Error
 
-def connect_to_database(host_name, user_name, user_password, db_name):
+HOST_NAME = "127.0.0.1"
+USER = "root"
+PASSWORD = "sia619753679"
+DATABASE = "onlineshop"
+
+def create_connection():
     connection = None
     try:
         connection = mysql.connector.connect(
-            host=host_name,
-            user=user_name,
-            passwd=user_password,
-            database=db_name
+            host=HOST_NAME,
+            user=USER,
+            password=PASSWORD,
+            database=DATABASE
         )
         print("Connection to MySQL DB successful")
     except Error as e:
@@ -38,19 +43,19 @@ def fetch_results(connection, query, params=None):
     finally:
         cursor.close()
 
-def fetch_one_result(connection, query, params=None):
-    cursor = connection.cursor()
-    try:
-        cursor.execute(query, params)
-        return cursor.fetchone()
-    except Error as err:
-        print(f"Error: {err}")
-        return None
-    finally:
-        cursor.close()
+# def fetch_one_result(connection, query, params=None):
+#     cursor = connection.cursor()
+#     try:
+#         cursor.execute(query, params)
+#         return cursor.fetchone()
+#     except Error as err:
+#         print(f"Error: {err}")
+#         return None
+#     finally:
+#         cursor.close()
 
 # Connect to the database
-connection = connect_to_database("your_host", "your_user", "your_password", "your_database")
+connection = create_connection()
 
 # Query 1: List all inactive brands and the number of their products.
 def list_inactive_brands_and_product_count(connection):

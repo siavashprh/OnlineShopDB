@@ -3,16 +3,25 @@ from faker import Faker
 import mysql.connector
 from mysql.connector import Error
 
-def connect_to_database(host_name, user_name, user_password, db_name):
+HOST_NAME = "127.0.0.1"
+USER = "root"
+PASSWORD = "si@9833015"
+DATABASE = "onlineshop"
+
+def create_connection():
     connection = None
     try:
         connection = mysql.connector.connect(
-            host=host_name,
-            user=user_name,
-            passwd=user_password,
-            database=db_name
+            host=HOST_NAME,
+            user=USER,
+            password=PASSWORD,
+            database=DATABASE,
+            auth_plugin='mysql_native_password'  # Ensure this line is included
         )
-        print("Connection to MySQL DB successful")
+        if connection.is_connected():
+            print("Connection to MySQL DB successful")
+        else:
+            print("Failed to connect to MySQL DB")
     except Error as e:
         print(f"The error '{e}' occurred")
     return connection
@@ -169,28 +178,31 @@ def insert_product_discounts(cursor, num_product_discounts=50):
         """, (product_id, discount_id))
 
 def main():
-    conn = connect_to_database()
-    cursor = conn.cursor()
-    fake = Faker()
+    conn = create_connection()
+    if conn is not None:
+        cursor = conn.cursor()
+        fake = Faker()
 
-    insert_users(cursor, fake)
-    insert_managers(cursor, fake)
-    insert_categories(cursor, categories)
-    insert_brands(cursor, brands)
-    insert_products(cursor, fake, categories, brands)
-    insert_shipping_info(cursor, fake, carriers)
-    insert_orders(cursor, fake)
-    insert_order_details(cursor)
-    insert_shopping_carts(cursor)
-    insert_cart_items(cursor)
-    insert_purchase_history(cursor)
-    insert_comments(cursor, fake)
-    insert_discounts(cursor, fake)
-    insert_product_discounts(cursor)
+        insert_users(cursor, fake)
+        insert_managers(cursor, fake)
+        insert_categories(cursor, categories)
+        insert_brands(cursor, brands)
+        insert_products(cursor, fake, categories, brands)
+        insert_shipping_info(cursor, fake, carriers)
+        insert_orders(cursor, fake)
+        insert_order_details(cursor)
+        insert_shopping_carts(cursor)
+        insert_cart_items(cursor)
+        insert_purchase_history(cursor)
+        insert_comments(cursor, fake)
+        insert_discounts(cursor, fake)
+        insert_product_discounts(cursor)
 
-    conn.commit()
-    cursor.close()
-    conn.close()
+        conn.commit()
+        cursor.close()
+        conn.close()
+    else:
+        print("Failed to create database connection.")
 
 if __name__ == "__main__":
     main()
