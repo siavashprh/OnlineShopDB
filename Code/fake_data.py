@@ -16,7 +16,7 @@ def create_connection():
             user=USER,
             password=PASSWORD,
             database=DATABASE,
-            auth_plugin='mysql_native_password'  # Ensure this line is included
+            auth_plugin="mysql_native_password"
         )
         if connection.is_connected():
             print("Connection to MySQL DB successful")
